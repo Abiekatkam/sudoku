@@ -1,23 +1,27 @@
-import React from 'react'
+import React from "react";
 
-const Cell = ({ value, onChange }) => {
-    const handleChange = (e) => {
-        const newValue = parseInt(e.target.value, 10);
-        if (newValue >= 1 && newValue <= 9) {
-          onChange(newValue);
-        } else {
-          onChange('');
-        }
-      };
-    
-      return (
-        <input
-          type="text"
-          value={value}
-          onChange={handleChange}
-          className="w-10 h-10 text-center border border-gray-300"
-        />
-      );
-}
+const Cell = ({ value, onChange, isDefault, isSelected, onClick }) => {
+  const handleChange = (e) => {
+    if (!isDefault) {
+      const newValue = e.target.value;
+      if (newValue === "" || /^[1-9]$/.test(newValue)) {
+        onChange(newValue === "" ? "" : parseInt(newValue, 10));
+      }
+    }
+  };
 
-export default Cell
+  return (
+    <input
+      type="text"
+      value={value}
+      disabled={isDefault}
+      onChange={handleChange}
+      onClick={onClick}
+      className={`w-10 h-10 text-center border border-gray-300 ${
+        isDefault ? "bg-gray-400" : isSelected ? "bg-gray-300" : "bg-white"
+      }`}
+    />
+  );
+};
+
+export default Cell;
