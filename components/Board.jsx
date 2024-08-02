@@ -34,8 +34,9 @@ const Board = ({ board, onCellChange, initialBoard, isActive }) => {
               <Cell
                 key={`${cellRow}-${cellCol}`}
                 value={!isActive ? "" : board[cellRow][cellCol]}
-                isDefault={isDefault}
                 isSelected={isSelected || isSameBox}
+                isDefault={isDefault}
+                isActive={isActive}
                 onClick={() => handleCellClick(cellRow, cellCol)}
                 onChange={(value) => onCellChange(cellRow, cellCol, value)}
               />
