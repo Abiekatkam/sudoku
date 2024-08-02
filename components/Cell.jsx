@@ -1,6 +1,13 @@
 import React from "react";
 
-const Cell = ({ value, onChange, isDefault, isSelected, onClick }) => {
+const Cell = ({
+  value,
+  onChange,
+  isDefault,
+  isSelected,
+  onClick,
+  isActive,
+}) => {
   const handleChange = (e) => {
     if (!isDefault) {
       const newValue = e.target.value;
@@ -18,7 +25,13 @@ const Cell = ({ value, onChange, isDefault, isSelected, onClick }) => {
       onChange={handleChange}
       onClick={onClick}
       className={`w-10 h-10 text-center border border-gray-300 ${
-        isDefault ? "bg-gray-400" : isSelected ? "bg-gray-300" : "bg-white"
+        !isActive
+          ? "bg-white"
+          : isDefault
+          ? "bg-gray-400"
+          : isSelected
+          ? "bg-gray-300"
+          : "bg-white"
       }`}
     />
   );
