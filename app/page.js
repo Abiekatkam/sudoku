@@ -1,38 +1,50 @@
 "use client";
 import Board from "@/components/Board";
 import Difficulty from "@/components/Difficulty";
+import InputNumbers from "@/components/InputNumbers";
 import Modal from "@/components/Modal";
 import Result from "@/components/Result";
 import { generateSudoku } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [board, setBoard] = useState([]);
+  const [solutionBoard, setSolutionBoard] = useState([]);
   const [difficulty, setDifficulty] = useState("easy");
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [resetKey, setResetKey] = useState(0);
   const [initialBoard, setInitialBoard] = useState([]);
+  const [mistakes, setMistakes] = useState(0);
+  const [resetKey, setResetKey] = useState(0);
+  const [isGameOver, setIsGameOver] = useState(false);
 
-  const handleCellChange = (row, col, value) => {
-    const newBoard = board.map((r, rowIndex) =>
-      r.map((cell, colIndex) =>
-        rowIndex === row && colIndex === col ? value : cell
-      )
-    );
+  useEffect(() => {
+    if (mistakes >= 7) {
+      setIsGameOver(true);
+      setIsActive(false);
+    }
+  }, [mistakes]);
+
+  const handleCellChange = (newBoard) => {
     setBoard(newBoard);
   };
 
   const handleChangeDifficulty = (newDifficulty, shouldStart = false) => {
+    setDifficulty(newDifficulty);
+    const { puzzle, solution } = generateSudoku(newDifficulty);
+    setBoard(puzzle);
+    setInitialBoard(puzzle);
+    setSolutionBoard(solution);
     if (shouldStart) {
-      setDifficulty(newDifficulty);
-      const newBoard = generateSudoku(newDifficulty);
-      setBoard(newBoard);
-      setInitialBoard(newBoard);
-      setIsActive(!isActive);
+      setIsActive(true);
       setIsPaused(false);
+      setMistakes(0);
       setResetKey((prevKey) => prevKey + 1);
+    } else {
+      setIsActive(false);
+      setIsPaused(false);
     }
+    setIsGameOver(false);
   };
 
   const handleStartGame = () => {
@@ -49,13 +61,16 @@ export default function Home() {
             isPaused={isPaused}
           />
           <div className="relative w-full h-full flex items-center justify-center">
-            {!isActive ? (
+            {!isActive || isGameOver ? (
               <>
                 <Board
                   board={board}
                   isActive={isActive}
                   onCellChange={handleCellChange}
                   initialBoard={initialBoard}
+                  solutionBoard={solutionBoard}
+                  mistakes={mistakes}
+                  setMistakes={setMistakes}
                 />
                 <div className="absolute z-10 w-full h-full flex items-center justify-center">
                   {isPaused ? (
@@ -66,6 +81,14 @@ export default function Home() {
                       }}
                       btnText={"Resume Game"}
                       description={""}
+                    />
+                  ) : isGameOver ? (
+                    <Modal
+                      btnClick={handleStartGame}
+                      btnText={"Start New Game"}
+                      description={
+                        "Game Over! You made too many mistakes. Try again!"
+                      }
                     />
                   ) : (
                     <Modal
@@ -84,6 +107,9 @@ export default function Home() {
                 isActive={isActive}
                 onCellChange={handleCellChange}
                 initialBoard={initialBoard}
+                solutionBoard={solutionBoard}
+                mistakes={mistakes}
+                setMistakes={setMistakes}
               />
             )}
           </div>
@@ -94,9 +120,10 @@ export default function Home() {
             setIsActive={setIsActive}
             isPaused={isPaused}
             setIsPaused={setIsPaused}
+            mistakes={mistakes}
             resetKey={resetKey}
           />
-          <span>inputs</span>
+          <InputNumbers isActive={isActive} />
         </div>
       </div>
     </main>

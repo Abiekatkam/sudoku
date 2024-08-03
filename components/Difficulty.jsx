@@ -9,7 +9,7 @@ const Difficulty = ({ handleDifficulty, difficulty, isPaused }) => {
       <Button
         variant="ghost"
         disabled={isPaused}
-        onClick={() => handleDifficulty("easy", true)}
+        onClick={() => handleDifficulty("easy", false)}
         className={`h-7 px-2 ${
           difficulty === "easy"
             ? "text-blue-900 font-semibold"
@@ -21,7 +21,7 @@ const Difficulty = ({ handleDifficulty, difficulty, isPaused }) => {
       <Button
         variant="ghost"
         disabled={isPaused}
-        onClick={() => handleDifficulty("medium", true)}
+        onClick={() => handleDifficulty("medium", false)}
         className={`h-7 px-2 ${
           difficulty === "medium"
             ? "text-blue-900 font-semibold"
@@ -33,7 +33,7 @@ const Difficulty = ({ handleDifficulty, difficulty, isPaused }) => {
       <Button
         variant="ghost"
         disabled={isPaused}
-        onClick={() => handleDifficulty("hard", true)}
+        onClick={() => handleDifficulty("hard", false)}
         className={`h-7 px-2 ${
           difficulty === "hard"
             ? "text-blue-900 font-semibold"
@@ -45,7 +45,7 @@ const Difficulty = ({ handleDifficulty, difficulty, isPaused }) => {
       <Button
         variant="ghost"
         disabled={isPaused}
-        onClick={() => handleDifficulty("expert", true)}
+        onClick={() => handleDifficulty("expert", false)}
         className={`h-7 px-2 ${
           difficulty === "expert"
             ? "text-blue-900 font-semibold"
@@ -57,7 +57,7 @@ const Difficulty = ({ handleDifficulty, difficulty, isPaused }) => {
       <Button
         variant="ghost"
         disabled={isPaused}
-        onClick={() => handleDifficulty("master", true)}
+        onClick={() => handleDifficulty("master", false)}
         className={`h-7 px-2 ${
           difficulty === "master"
             ? "text-blue-900 font-semibold"
@@ -69,7 +69,7 @@ const Difficulty = ({ handleDifficulty, difficulty, isPaused }) => {
       <Button
         variant="ghost"
         disabled={isPaused}
-        onClick={() => handleDifficulty("extreme", true)}
+        onClick={() => handleDifficulty("extreme", false)}
         className={`h-7 px-2 ${
           difficulty === "extreme"
             ? "text-blue-900 font-semibold"

@@ -1,13 +1,41 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Cell from "./Cell";
 
-const Board = ({ board, onCellChange, initialBoard, isActive }) => {
+const Board = ({
+  board,
+  onCellChange,
+  initialBoard,
+  isActive,
+  solutionBoard,
+  setMistakes,
+}) => {
   const [selectedCell, setSelectedCell] = useState({ row: null, col: null });
+
+  useEffect(() => {
+    if (isActive && selectedCell.row === null && selectedCell.col === null) {
+      setSelectedCell({ row: 0, col: 0 });
+    }
+  }, [isActive]);
 
   const handleCellClick = (row, col) => {
     if (initialBoard[row][col] === "") {
       setSelectedCell({ row, col });
+    }
+  };
+
+  const handleCellChange = (row, col, value) => {
+    if (initialBoard[row][col] === "") {
+      const newBoard = board.map((r, rowIndex) =>
+        r.map((cell, colIndex) =>
+          rowIndex === row && colIndex === col ? value : cell
+        )
+      );
+      onCellChange(newBoard);
+
+      if (value !== solutionBoard[row][col]) {
+        setMistakes((prev) => Math.min(prev + 1, 7));
+      }
     }
   };
 
@@ -25,10 +53,14 @@ const Board = ({ board, onCellChange, initialBoard, isActive }) => {
             const isDefault =
               !isActive || initialBoard[cellRow][cellCol] !== "";
             const isSelected =
-              selectedCell.row === cellRow || selectedCell.col === cellCol;
+              selectedCell.row === cellRow && selectedCell.col === cellCol;
             const isSameBox =
               Math.floor(selectedCell.row / 3) === boxRow &&
               Math.floor(selectedCell.col / 3) === boxCol;
+            const isValid =
+              !isActive ||
+              board[cellRow][cellCol] === "" ||
+              board[cellRow][cellCol] === solutionBoard[cellRow][cellCol];
 
             cells.push(
               <Cell
@@ -37,8 +69,9 @@ const Board = ({ board, onCellChange, initialBoard, isActive }) => {
                 isSelected={isSelected || isSameBox}
                 isDefault={isDefault}
                 isActive={isActive}
+                isValid={isValid}
                 onClick={() => handleCellClick(cellRow, cellCol)}
-                onChange={(value) => onCellChange(cellRow, cellCol, value)}
+                onChange={(value) => handleCellChange(cellRow, cellCol, value)}
               />
             );
           }

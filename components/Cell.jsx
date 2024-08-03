@@ -2,11 +2,12 @@ import React from "react";
 
 const Cell = ({
   value,
-  onChange,
   isDefault,
   isSelected,
-  onClick,
   isActive,
+  onClick,
+  onChange,
+  isValid,
 }) => {
   const handleChange = (e) => {
     if (!isDefault) {
@@ -32,7 +33,7 @@ const Cell = ({
           : isSelected
           ? "bg-gray-300"
           : "bg-white"
-      }`}
+      } ${isValid === false ? "text-red-500" : ""}`}
     />
   );
 };
