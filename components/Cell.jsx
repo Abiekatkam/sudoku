@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 const Cell = ({
   value,
   isDefault,
   isSelected,
+  isInSameBox,
+  isInSameRowOrCol,
   isActive,
   onClick,
   onChange,
   isValid,
 }) => {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (isSelected && !isDefault && isActive) {
+      inputRef.current.focus();
+    }
+  }, [isSelected, isDefault, isActive]);
+
   const handleChange = (e) => {
     if (!isDefault) {
       const newValue = e.target.value;
@@ -20,6 +30,7 @@ const Cell = ({
 
   return (
     <input
+      ref={inputRef}
       type="text"
       value={value}
       disabled={isDefault}
@@ -32,6 +43,8 @@ const Cell = ({
           ? "bg-gray-400"
           : isSelected
           ? "bg-gray-300"
+          : isInSameBox || isInSameRowOrCol
+          ? "bg-gray-200"
           : "bg-white"
       } ${isValid === false ? "text-red-500" : ""}`}
     />

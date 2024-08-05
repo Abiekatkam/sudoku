@@ -10,6 +10,9 @@ const Result = ({
   setIsPaused,
   mistakes,
   resetKey,
+  score,
+  time,
+  setTime,
 }) => {
   return (
     <div className="w-full h-fit flex items-center text-[12px] justify-between">
@@ -20,10 +23,18 @@ const Result = ({
         </span>
       </div>
       <div>
-        <span className="font-semibold text-slate-400">Scores:</span>{" "}
-        <span className="font-semibold text-slate-800 text-[15px]">0</span>
+        <span className="font-semibold text-slate-400">Score:</span>{" "}
+        <span className="font-semibold text-slate-800 text-[15px]">
+          {score}
+        </span>
       </div>
-      <Timer isPaused={isPaused} isActive={isActive} resetKey={resetKey} />
+      <Timer
+        isPaused={isPaused}
+        isActive={isActive}
+        resetKey={resetKey}
+        time={time}
+        setTime={setTime}
+      />
       <Button
         variant="outline"
         className="w-fit h-fit p-1"

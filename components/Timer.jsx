@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { formatTime } from "@/lib/utils";
+import React, { useEffect } from "react";
 
-const Timer = ({ isPaused, isActive, resetKey  }) => {
-  const [time, setTime] = useState(0); // time in seconds
-
+const Timer = ({ isPaused, isActive, resetKey, time, setTime }) => {
   useEffect(() => {
     if (resetKey !== null) {
       setTime(0);
@@ -21,13 +20,9 @@ const Timer = ({ isPaused, isActive, resetKey  }) => {
     return () => clearInterval(interval);
   }, [isPaused, isActive]);
 
-  const formatTime = (totalSeconds) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
-  return <span className="font-semibold text-slate-400">{formatTime(time)}</span>;
+  return (
+    <span className="font-semibold text-slate-400">{formatTime(time)}</span>
+  );
 };
 
 export default Timer;

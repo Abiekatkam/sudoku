@@ -1,5 +1,4 @@
-"use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Cell from "./Cell";
 
 const Board = ({
@@ -9,15 +8,11 @@ const Board = ({
   isActive,
   solutionBoard,
   setMistakes,
+  setScore,
+  onComplete,
+  selectedCell,
+  setSelectedCell,
 }) => {
-  const [selectedCell, setSelectedCell] = useState({ row: null, col: null });
-
-  useEffect(() => {
-    if (isActive && selectedCell.row === null && selectedCell.col === null) {
-      setSelectedCell({ row: 0, col: 0 });
-    }
-  }, [isActive]);
-
   const handleCellClick = (row, col) => {
     if (initialBoard[row][col] === "") {
       setSelectedCell({ row, col });
@@ -25,7 +20,10 @@ const Board = ({
   };
 
   const handleCellChange = (row, col, value) => {
-    if (initialBoard[row][col] === "") {
+    if (
+      initialBoard[row][col] === "" &&
+      board[row][col] !== solutionBoard[row][col]
+    ) {
       const newBoard = board.map((r, rowIndex) =>
         r.map((cell, colIndex) =>
           rowIndex === row && colIndex === col ? value : cell
@@ -33,7 +31,21 @@ const Board = ({
       );
       onCellChange(newBoard);
 
-      if (value !== solutionBoard[row][col]) {
+      if (value === solutionBoard[row][col]) {
+        setScore((prevScore) => prevScore + 10); // Increment score
+
+        // Check if the entire board is complete
+        if (
+          newBoard
+            .flat()
+            .every((cell, index) => cell === solutionBoard.flat()[index])
+        ) {
+          onComplete(); // Call onComplete if the board is correct
+        }
+        return;
+      }
+
+      if (value !== "" && value !== solutionBoard[row][col]) {
         setMistakes((prev) => Math.min(prev + 1, 7));
       }
     }
@@ -54,9 +66,11 @@ const Board = ({
               !isActive || initialBoard[cellRow][cellCol] !== "";
             const isSelected =
               selectedCell.row === cellRow && selectedCell.col === cellCol;
-            const isSameBox =
+            const isInSameBox =
               Math.floor(selectedCell.row / 3) === boxRow &&
               Math.floor(selectedCell.col / 3) === boxCol;
+            const isInSameRowOrCol =
+              selectedCell.row === cellRow || selectedCell.col === cellCol;
             const isValid =
               !isActive ||
               board[cellRow][cellCol] === "" ||
@@ -66,7 +80,9 @@ const Board = ({
               <Cell
                 key={`${cellRow}-${cellCol}`}
                 value={!isActive ? "" : board[cellRow][cellCol]}
-                isSelected={isSelected || isSameBox}
+                isSelected={isSelected}
+                isInSameBox={isInSameBox}
+                isInSameRowOrCol={isInSameRowOrCol}
                 isDefault={isDefault}
                 isActive={isActive}
                 isValid={isValid}

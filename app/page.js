@@ -4,7 +4,7 @@ import Difficulty from "@/components/Difficulty";
 import InputNumbers from "@/components/InputNumbers";
 import Modal from "@/components/Modal";
 import Result from "@/components/Result";
-import { generateSudoku } from "@/lib/utils";
+import { formatTime, generateSudoku } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -15,8 +15,12 @@ export default function Home() {
   const [isPaused, setIsPaused] = useState(false);
   const [initialBoard, setInitialBoard] = useState([]);
   const [mistakes, setMistakes] = useState(0);
+  const [score, setScore] = useState(0);
   const [resetKey, setResetKey] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [time, setTime] = useState(0);
+  const [selectedCell, setSelectedCell] = useState({ row: 0, col: 0 });
 
   useEffect(() => {
     if (mistakes >= 7) {
@@ -39,6 +43,7 @@ export default function Home() {
       setIsActive(true);
       setIsPaused(false);
       setMistakes(0);
+      setScore(0); // Reset score
       setResetKey((prevKey) => prevKey + 1);
     } else {
       setIsActive(false);
@@ -51,6 +56,42 @@ export default function Home() {
     handleChangeDifficulty(difficulty, true);
   };
 
+  const handleNewGame = () => {
+    const { puzzle, solution } = generateSudoku(difficulty);
+    setBoard(puzzle);
+    setInitialBoard(puzzle);
+    setSolutionBoard(solution);
+    setMistakes(0);
+    setScore(0);
+    setResetKey((prevKey) => prevKey + 1);
+  };
+
+  const handleComplete = () => {
+    setIsActive(false);
+    setIsModalVisible(true);
+  };
+
+  const handleNumberClick = (number) => {
+    const { row, col } = selectedCell; 
+    if (initialBoard[row][col] === "") {
+      const newBoard = board.map((r, rowIndex) =>
+        r.map((cell, colIndex) =>
+          rowIndex === row && colIndex === col ? number : cell
+        )
+      );
+  
+      handleCellChange(newBoard);
+  
+      if (number === solutionBoard[row][col]) {
+        setScore((prevScore) => prevScore + 10); 
+      } else {
+        if (number !== "") {
+          setMistakes((prev) => Math.min(prev + 1, 7)); 
+        }
+      }
+    }
+  };
+
   return (
     <main className="w-full h-full min-h-screen flex items-center justify-center">
       <div className="w-full max-w-[740px] h-[435px] m-auto flex items-start justify-center">
@@ -61,7 +102,7 @@ export default function Home() {
             isPaused={isPaused}
           />
           <div className="relative w-full h-full flex items-center justify-center">
-            {!isActive || isGameOver ? (
+            {!isActive || isGameOver || isModalVisible ? (
               <>
                 <Board
                   board={board}
@@ -71,6 +112,10 @@ export default function Home() {
                   solutionBoard={solutionBoard}
                   mistakes={mistakes}
                   setMistakes={setMistakes}
+                  setScore={setScore}
+                  onComplete={handleComplete}
+                  selectedCell={selectedCell}
+                  setSelectedCell={setSelectedCell}
                 />
                 <div className="absolute z-10 w-full h-full flex items-center justify-center">
                   {isPaused ? (
@@ -89,6 +134,17 @@ export default function Home() {
                       description={
                         "Game Over! You made too many mistakes. Try again!"
                       }
+                    />
+                  ) : isModalVisible ? (
+                    <Modal
+                      btnClick={() => {
+                        setIsModalVisible(false);
+                        handleNewGame();
+                      }}
+                      btnText={"Close"}
+                      description={`Congratulations! Your score is ${score}. Time of completion: ${formatTime(
+                        time
+                      )} seconds.`}
                     />
                   ) : (
                     <Modal
@@ -110,6 +166,10 @@ export default function Home() {
                 solutionBoard={solutionBoard}
                 mistakes={mistakes}
                 setMistakes={setMistakes}
+                setScore={setScore}
+                onComplete={handleComplete}
+                selectedCell={selectedCell}
+                setSelectedCell={setSelectedCell}
               />
             )}
           </div>
@@ -122,8 +182,15 @@ export default function Home() {
             setIsPaused={setIsPaused}
             mistakes={mistakes}
             resetKey={resetKey}
+            score={score}
+            time={time}
+            setTime={setTime}
           />
-          <InputNumbers isActive={isActive} />
+          <InputNumbers
+            isActive={isActive}
+            onNumberClick={handleNumberClick}
+            handleNewGame={handleNewGame}
+          />
         </div>
       </div>
     </main>
