@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 const Difficulty = ({ handleDifficulty, difficulty, isPaused }) => {
   return (
     <div className="w-full h-fit flex items-center text-[12px]">
-      <span className="font-semibold">Difficulty:</span>
+      <span className="font-semibold hidden md:inline">Difficulty:</span>
       <Button
         variant="ghost"
         disabled={isPaused}

@@ -94,8 +94,8 @@ export default function Home() {
 
   return (
     <main className="w-full h-full min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-[740px] h-[435px] m-auto flex items-start justify-center">
-        <div className="w-[57%] h-full flex flex-col items-start justify-between">
+      <div className="w-full md:max-w-[740px] md:h-[435px] md:m-auto mt-10 flex md:flex-row flex-col items-start justify-center">
+        <div className="md:w-[57%] w-full h-full flex flex-col items-start justify-between">
           <Difficulty
             difficulty={difficulty}
             handleDifficulty={handleChangeDifficulty}
@@ -174,7 +174,7 @@ export default function Home() {
             )}
           </div>
         </div>
-        <div className="w-[39%] h-full ml-auto flex flex-col items-start">
+        <div className="md:w-[39%] mt-6 md:mt-0 mx-10 md:mx-0 w-full h-full ml-0 md:ml-auto flex flex-col items-start mb-4">
           <Result
             isActive={isActive}
             setIsActive={setIsActive}

@@ -15,7 +15,7 @@ const Result = ({
   setTime,
 }) => {
   return (
-    <div className="w-full h-fit flex items-center text-[12px] justify-between">
+    <div className="w-full h-fit flex items-center text-[12px] md:justify-between justify-around mb-3 md:mb-0">
       <div>
         <span className="font-semibold text-slate-400">Mistakes:</span>{" "}
         <span className="font-semibold text-slate-800 text-[15px]">
